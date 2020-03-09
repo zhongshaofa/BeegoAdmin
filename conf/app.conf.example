@@ -1,0 +1,22 @@
+appname = BeegoAdmin
+httpport = 8888
+runmode = formal
+
+# MYSQL配置
+dbport = 3306
+dbname = beego_admin
+dbprefix = bee_
+
+
+[dev]
+dbhost = 127.0.0.1
+[formal]
+dbhost = 127.0.0.1
+[dev]
+dbuser = root
+[formal]
+dbuser = root
+[dev]
+dbpassword = root
+[formal]
+dbpassword = root
