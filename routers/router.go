@@ -6,5 +6,10 @@ import (
 )
 
 func init() {
-	beego.Router("/", &controllers.IndexController{})
+
+	//主页地址
+	beego.Router("/", &controllers.IndexController{}, "Get:Index")
+
+	//初始化接口
+	beego.Router("/sys_init", &controllers.IndexController{}, "Get:SystemInit")
 }

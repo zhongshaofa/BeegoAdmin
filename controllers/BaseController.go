@@ -19,5 +19,7 @@ func (c *BaseController) Prepare() {
 	c.controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
 	c.actionName = strings.ToLower(actionName)
 	c.o = orm.NewOrm()
-	c.cdnUrl = "/"
+
+	c.cdnUrl = beego.AppConfig.String("cdn_url") // cdn配置，后期用于修改OSS位置的配置信息
+	c.Data["cdnUrl"] = c.cdnUrl
 }
