@@ -90,6 +90,7 @@ func (m *SystemMenu) buildMenuChild(pid int, menuList []SystemMenu) []*MenuTreeL
 			if len(child) != 0 {
 				node.Child = child
 			}
+			// todo 后续此处加上用户的权限判断
 			treeList = append(treeList, node)
 		}
 	}

@@ -11,4 +11,6 @@ func init() {
 	beego.Router("/system_init", &controllers.IndexController{}, "Get:SystemInit")
 	beego.Router("/clear", &controllers.IndexController{}, "Get:Clear")
 
+	beego.Router("/login", &controllers.LoginController{}, "*:Index")
+
 }

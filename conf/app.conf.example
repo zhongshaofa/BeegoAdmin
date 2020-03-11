@@ -1,6 +1,7 @@
 appname = BeegoAdmin
 httpport = 8888
 runmode = formal
+copyrequestbody = true
 
 # MYSQL配置
 dbport = 3306

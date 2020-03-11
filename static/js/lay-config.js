@@ -10,7 +10,6 @@ window.rootPath = (function (src) {
 })();
 
 layui.config({
-    base: rootPath + "lay-module/",
     version: true
 }).extend({
     miniAdmin: "layuimini/miniAdmin", // layuimini后台扩展
