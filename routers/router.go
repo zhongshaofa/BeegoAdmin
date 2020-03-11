@@ -7,9 +7,8 @@ import (
 
 func init() {
 
-	//主页地址
 	beego.Router("/", &controllers.IndexController{}, "Get:Index")
+	beego.Router("/system_init", &controllers.IndexController{}, "Get:SystemInit")
+	beego.Router("/clear", &controllers.IndexController{}, "Get:Clear")
 
-	//初始化接口
-	beego.Router("/sys_init", &controllers.IndexController{}, "Get:SystemInit")
 }

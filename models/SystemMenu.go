@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -12,12 +11,31 @@ type SystemMenu struct {
 	Title    string    `json:"title"`
 	Icon     string    `json:"icon"`
 	Href     string    `json:"href"`
+	Sort     string    `json:"sort"`
 	Target   string    `json:"target"`
 	Remark   string    `json:"remark"`
 	Status   int       `json:"status"`
 	CreateAt time.Time `json:"create_at";orm:"auto_now;type(datetime)"`
 }
 
+func (m *SystemMenu) TableName() string {
+	return TableName("system_menu")
+}
+
+// 初始化结构体
+type SystemInit struct {
+	HomeInfo struct {
+		Title string `json:"title"`
+		Href  string `json:"href"`
+	} `json:"homeInfo"`
+	LogoInfo struct {
+		Title string `json:"title"`
+		Image string `json:"image"`
+	} `json:"logoInfo"`
+	MenuInfo []*MenuTreeList `json:"menuInfo"`
+}
+
+// 菜单结构体
 type MenuTreeList struct {
 	Id     int             `json:"id"`
 	Pid    int             `json:"pid"`
@@ -29,39 +47,51 @@ type MenuTreeList struct {
 	Child  []*MenuTreeList `json:"child"`
 }
 
-func (m *SystemMenu) TableName() string {
-	return TableName("system_menu")
+// 获取初始化数据
+func (m *SystemMenu) GetSystemInit() SystemInit {
+	var systemInit SystemInit
+
+	// 首页
+	systemInit.HomeInfo.Title = "首页"
+	systemInit.HomeInfo.Href = "static/page/welcome-1.html?t=1"
+
+	// logo
+	systemInit.LogoInfo.Title = "BeeAdmin"
+	systemInit.LogoInfo.Image = "static/images/logo.png"
+
+	// 菜单
+	systemInit.MenuInfo = m.GetMenuList()
+
+	return systemInit
 }
 
-/**
-菜单列表
-*/
-func (m *SystemMenu) MenuList() []*MenuTreeList {
-	return m.getMenu(0)
-}
-
-/**
-递归获取树形菜单
-*/
-func (m *SystemMenu) getMenu(pid int) []*MenuTreeList {
+// 获取菜单列表
+func (m *SystemMenu) GetMenuList() []*MenuTreeList {
 	o := orm.NewOrm()
-	var menu []SystemMenu
-	_, _ = o.QueryTable(m.TableName()).Filter("pid", pid).OrderBy("sort").All(&menu)
-	fmt.Println("======遍历========")
-	fmt.Println(menu[0])
+	var menuList []SystemMenu
+	_, _ = o.QueryTable(m.TableName()).All(&menuList)
+	return m.buildMenuChild(0, menuList)
+}
 
-	treeList := []*MenuTreeList{}
-	for _, v := range menu {
-		child := v.getMenu(v.Id)
-		node := &MenuTreeList{
-			Id:     v.Id,
-			Title:  v.Title,
-			Icon:   v.Icon,
-			Target: v.Target,
-			Pid:    v.Pid,
+//递归获取子菜单
+func (m *SystemMenu) buildMenuChild(pid int, menuList []SystemMenu) []*MenuTreeList {
+	var treeList []*MenuTreeList
+	for _, v := range menuList {
+		if pid == v.Pid {
+			node := &MenuTreeList{
+				Id:     v.Id,
+				Title:  v.Title,
+				Icon:   v.Icon,
+				Href:   v.Href,
+				Target: v.Target,
+				Pid:    v.Pid,
+			}
+			child := v.buildMenuChild(v.Id, menuList)
+			if len(child) != 0 {
+				node.Child = child
+			}
+			treeList = append(treeList, node)
 		}
-		node.Child = child
-		treeList = append(treeList, node)
 	}
 	return treeList
 }

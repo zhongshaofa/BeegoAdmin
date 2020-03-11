@@ -14,6 +14,11 @@ type BaseController struct {
 	cdnUrl         string
 }
 
+type Message struct {
+	Code int                    `json:"code"`
+	Msg  string                 `json:"msg"`
+}
+
 func (c *BaseController) Prepare() {
 	controllerName, actionName := c.GetControllerAndAction()
 	c.controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])

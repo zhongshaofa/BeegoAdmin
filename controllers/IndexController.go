@@ -2,31 +2,27 @@ package controllers
 
 import (
 	"BeegoAdmin/models"
-	"fmt"
 )
 
 type IndexController struct {
 	BaseController
 }
 
+// 主页
 func (c *IndexController) Index() {
 	c.TplName = "index.html"
 }
 
+// 初始化后台框架接口
 func (c *IndexController) SystemInit() {
+	systemInit := new(models.SystemMenu).GetSystemInit()
+	c.Data["json"] = systemInit
+	c.ServeJSON()
+}
 
-	//menuList := []*models.SystemMenu{}
-	//c.o.QueryTable(new(models.SystemMenu).TableName()).Filter("status", 1).All(&menuList)
-
-	menuList := models.SystemMenu{}.MenuList()
-
-	fmt.Println(menuList)
-
-	jsonMap := make(map[string]interface{})
-	jsonMap["code"] = "200"
-	jsonMap["mag"] = "请求成功"
-	//jsonMap["data"] = menuList
-	c.Data["json"] = &jsonMap
-	fmt.Println("执行到此处")
+// 清理缓存
+func (c *IndexController) Clear() {
+	data := Message{Code: 1, Msg: "清理服务端缓存成功"}
+	c.Data["json"] = data
 	c.ServeJSON()
 }
